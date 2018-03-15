@@ -67,11 +67,11 @@ class CaptionGenerator():
         gen_count = 0
         df = pd.read_csv('Flickr8k_text/flickr_8k_train_dataset.txt', delimiter='\t')
         nb_samples = df.shape[0]
-        iter = df.iterrows()
+        iter1 = df.iterrows()
         caps = []
         imgs = []
         for i in range(nb_samples):
-            x = next(iter)
+            x = next(iter1)
             caps.append(x[1][1])
             imgs.append(x[1][0])
 
@@ -86,9 +86,9 @@ class CaptionGenerator():
                     total_count+=1
                     partial = [self.word_index[txt] for txt in text.split()[:i+1]]
                     partial_caps.append(partial)
-                    next = np.zeros(self.vocab_size)
-                    next[self.word_index[text.split()[i+1]]] = 1
-                    next_words.append(next)
+                    next1 = np.zeros(self.vocab_size)
+                    next1[self.word_index[text.split()[i+1]]] = 1
+                    next_words.append(next1)
                     images.append(current_image)
 
                     if total_count>=batch_size:
