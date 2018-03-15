@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Embedding, TimeDistributed, Dense, RepeatVector, Merge, Activation, Flatten
 from keras.preprocessing import image, sequence
 from keras.callbacks import ModelCheckpoint
-import cPickle as pickle
+import pickle as pickle
 
 EMBEDDING_DIM = 128
 
@@ -28,13 +28,13 @@ class CaptionGenerator():
         iter = df.iterrows()
         caps = []
         for i in range(nb_samples):
-            x = iter.next()
+            x = next(iter)
             caps.append(x[1][1])
 
         self.total_samples=0
         for text in caps:
             self.total_samples+=len(text.split())-1
-        print "Total samples : "+str(self.total_samples)
+        print("Total samples : "+str(self.total_samples))
         
         words = [txt.split() for txt in caps]
         unique = []
@@ -54,16 +54,16 @@ class CaptionGenerator():
             if(len(caption.split()) > max_len):
                 max_len = len(caption.split())
         self.max_cap_len = max_len
-        print "Vocabulary size: "+str(self.vocab_size)
-        print "Maximum caption length: "+str(self.max_cap_len)
-        print "Variables initialization done!"
+        print("Vocabulary size: "+str(self.vocab_size))
+        print("Maximum caption length: "+str(self.max_cap_len))
+        print("Variables initialization done!")
 
 
     def data_generator(self, batch_size = 32):
         partial_caps = []
         next_words = []
         images = []
-        print "Generating data..."
+        print("Generating data...")
         gen_count = 0
         df = pd.read_csv('Flickr8k_text/flickr_8k_train_dataset.txt', delimiter='\t')
         nb_samples = df.shape[0]
@@ -71,7 +71,7 @@ class CaptionGenerator():
         caps = []
         imgs = []
         for i in range(nb_samples):
-            x = iter.next()
+            x = next(iter)
             caps.append(x[1][1])
             imgs.append(x[1][0])
 
@@ -97,7 +97,7 @@ class CaptionGenerator():
                         partial_caps = sequence.pad_sequences(partial_caps, maxlen=self.max_cap_len, padding='post')
                         total_count = 0
                         gen_count+=1
-                        print "yielding count: "+str(gen_count)
+                        print("yielding count: "+str(gen_count))
                         yield [[images, partial_caps], next_words]
                         partial_caps = []
                         next_words = []
@@ -130,7 +130,7 @@ class CaptionGenerator():
         model.add(Dense(self.vocab_size))
         model.add(Activation('softmax'))
 
-        print "Model created!"
+        print("Model created!")
 
         if(ret_model==True):
             return model
